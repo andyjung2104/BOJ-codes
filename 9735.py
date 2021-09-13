@@ -1,29 +1,28 @@
-N=int(input())
-for n in range(N):
-    a,b,c,d=map(int,input().split())
-    DD=(b*c)**2-4*b**3*d-4*c**3*a+18*a*b*c*d-27*(a*d)**2
-    ans=0
-    if DD>0:
-        ans=3
-    elif DD==0:
-        ans=2
-    else:
-        ans=1
-    B=b/(3*a)
-    C=c/a
-    D=d/a
-    P=(C-3*B**2)/3
-    Q=(D-B*C+2*B**3)/2
-    w=[1,complex(-1/2,(3**.5)/2),complex(-1/2,-(3**.5)/2)]
-    x=[]
-    for k in range(3):
-        x.append(-B+w[k]*(Q+(Q**2+P**3)**.5)**(1/3)+w[(3-k)%3]*(Q-(Q**2+P**3)**.5)**(1/3))
-    if ans==3:
-        print(*[t.real for t in x])
-    elif ans==2:
-        print(x[0].real)
-    else:
-        for y in x:
-            if y.imag<10**-4:
-                print(y.real)
+import sys
+for __ in range(int(input())):
+    a,b,c,d=map(int,sys.stdin.readline().split())
+    i=-1
+    for x in range(0,2*10**6+1):
+        if a*x**3+b*x**2+c*x+d==0:
+            i=x
+            break
+    if i==-1:
+        for x in range(1,2*10**6+1):
+            if a*x**3-b*x**2+c*x-d==0:
+                i=-x
                 break
+    #ax^3+bx^2+cx+d=(x-integer)(ax^2+(b+a*integer)x+
+    #(c+integer*(b+a*integer)))
+    if a*i**2+(b+a*i)*i+(c+i*(b+a*i))==0:
+        print(*sorted(list(set([i,-i-(b+a*i)/a]))))
+    else:
+        D=(b+a*i)**2-4*a*(c+i*(b+a*i))
+        if D==0:
+            print(*sorted([i,-(b+a*i)/(2*a)]))
+        elif D<0:
+            print(i)
+        else:
+            A,B,C=a,b+a*i,c+i*(b+a*i)
+            x1=(-B+(B**2-4*A*C)**.5)/(2*A)
+            x2=(-B-(B**2-4*A*C)**.5)/(2*A)
+            print(*sorted([x1,x2,i]))
